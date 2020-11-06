@@ -9,7 +9,7 @@ import {
     OfficeScreen,
     TenantScreen,
     EditOfficeScreen
-} from './screens'
+} from './components'
 
 const RouterComponent = () => (
     <Router>

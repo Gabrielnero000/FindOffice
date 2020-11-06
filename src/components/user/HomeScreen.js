@@ -2,25 +2,22 @@ import React, { Component } from 'react';
 import { 
     View, 
     Text,
-    StyleSheet,
+    StyleSheet
 } from 'react-native'
 
-import Button from '../components/common/Button'
+import Button from '../common/Button'
 
 import { Actions } from 'react-native-router-flux'
 
 class HomeScreen extends Component {
-    onPressUser = () => Actions.user()
-    onPressTentant = () => Actions.tenant()
-    onPressSignUp = () => Actions.signUp()
+    onPressSearch = () => Actions.office()
 
     render() {
+
         return (
             <View style={styles.container}>
-                <Text>Initial login screen</Text>
-                <Button text='Login User' onPress={this.onPressUser}/>
-                <Button text='Login Tenant' onPress={this.onPressTentant}/>
-                <Button text='Sign Up' onPress={this.onPressSignUp}/>
+                <Text>This is the home screen of a normal user</Text>
+                <Button text='Search Office' onPress={this.onPressSearch}/>
             </View>
         )
     }
@@ -34,6 +31,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     }
 });
-
 
 export default HomeScreen

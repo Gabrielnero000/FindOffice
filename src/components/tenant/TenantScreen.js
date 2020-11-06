@@ -5,19 +5,20 @@ import {
     StyleSheet
 } from 'react-native'
 
-import Button from '../components/common/Button'
+import Button from '../common/Button'
 
 import { Actions } from 'react-native-router-flux'
 
-class HomeScreen extends Component {
-    onPressSearch = () => Actions.office()
+class TenantScreen extends Component {
+    onPressAdd = () => Actions.office()
+    onPressEdit = () => Actions.office()
 
     render() {
-
         return (
             <View style={styles.container}>
-                <Text>This is the home screen of a normal user</Text>
-                <Button text='Search Office' onPress={this.onPressSearch}/>
+                <Text>This is the home screen of a tenant</Text>
+                <Button text='Add Office' onPress={this.onPressAdd}/>
+                <Button text='Edit Office' onPress={this.onPressEdit}/>
             </View>
         )
     }
@@ -32,4 +33,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default HomeScreen
+export default TenantScreen

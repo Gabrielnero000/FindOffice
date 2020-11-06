@@ -5,7 +5,7 @@ import {
     StyleSheet,
 } from 'react-native'
 
-import Button from '../components/common/Button'
+import Button from '../common/Button'
 
 import { Actions } from 'react-native-router-flux'
 
