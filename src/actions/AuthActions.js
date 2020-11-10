@@ -7,7 +7,7 @@ import {
     AUTH_LOGIN_SUCCESS
 } from './types'
 
-import AuthApi from '../api/mock/AuthApi'
+import AuthApi from '../api/AuthApi'
 
 import { Actions } from 'react-native-router-flux'
 
@@ -56,7 +56,7 @@ export const signUp = user => {
 
         const result = AuthApi.signUp(user)
 
-        if (result.sucess)
+        if (result.success)
             signUpSuccess(dispatch, result.user)
         else
             signUpFail(dispatch, result.error)
@@ -69,10 +69,16 @@ export const login = (email, password) => {
 
         AuthApi.login(email, password)
             .then(result => {
-                if (result.sucess)
+                console.log(result)
+
+                if (result.success)
                     loginSuccess(dispatch, result.user)
                 else
                     loginFail(dispatch, result.error)
+            })
+            .catch(error => {
+                console.log(error)
+                loginFail(dispatch, error.error)
             })
     }
 }
