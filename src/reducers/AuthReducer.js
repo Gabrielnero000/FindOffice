@@ -9,7 +9,7 @@ import {
 
 const initialState = {
     errorLoging: '',
-    errorCreating: '',
+    errorSigningUp: '',
     waiting: false,
     user: null
 }
@@ -19,7 +19,7 @@ const AuthReducer = (state = initialState, action) => {
         case AUTH_SIGN_UP:
             return { ...initialState, loading: true }
         case AUTH_SIGN_UP_FAIL:
-            return { ...state, errorCreating: action.reason, loading: false }
+            return { ...state, errorSigningUp: action.reason, loading: false }
         case AUTH_SIGN_UP_SUCCESS:
             return { ...state, loading: false, user: action.payload }
         case AUTH_LOGIN:

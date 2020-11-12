@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import {
     View,
-    Text,
     StyleSheet,
 } from 'react-native'
 
 import Spinner from 'react-native-loading-spinner-overlay'
 
-import Button from '../common/Button'
-import Input from '../common/Input'
-import Title from '../common/Title'
+import {
+    Button,
+    Input,
+    Text
+} from 'react-native-elements'
 
 import { login } from '../../actions/AuthActions'
 import { connect } from 'react-redux'
@@ -42,9 +43,6 @@ class LoginScreen extends Component {
     onChangeEmail = text => this.setState({ email: text })
     onChangePassword = text => this.setState({ password: text })
 
-    onPressUser = () => Actions.user()
-    onPressTentant = () => Actions.tenant()
-
     renderLoading = loading => (
         <View>
             <Spinner visible={loading} />
@@ -53,21 +51,34 @@ class LoginScreen extends Component {
 
     renderAppName = () => (
         <View>
-            <Title title='Find Office' />
+            <Text h1 style={styles.title}>Find Office</Text>
         </View>
     )
 
     renderInputs = (email, password) => (
         <View>
-            <Input placeholder='Email' onChange={this.onChangeEmail} value={email} />
-            <Input placeholder='Password' secureTextEntry onChange={this.onChangePassword} value={password} />
+            <Input
+                containerStyle={styles.input}
+                placeholder='Email'
+                onChangeText={this.onChangeEmail}
+                leftIcon={{ name: 'email' }}
+                leftIconContainerStyle={styles.leftIcon}
+                value={email} />
+            <Input
+                containerStyle={styles.input}
+                placeholder='Password'
+                secureTextEntry
+                onChangeText={this.onChangePassword}
+                leftIcon={{ name: 'lock' }}
+                leftIconContainerStyle={styles.leftIcon}
+                value={password} />
         </View>
     )
 
     renderButtons = () => (
         <View>
-            <Button text='Login' onPress={this.onPressLogin} />
-            <Button text='Sign Up' onPress={this.onPressSignUp} />
+            <Button buttonStyle={styles.button} title='Login' onPress={this.onPressLogin} />
+            <Button buttonStyle={styles.button} title='Sign Up' onPress={this.onPressSignUp} />
         </View>
     )
 
@@ -108,8 +119,23 @@ const styles = StyleSheet.create({
     errorText: {
         fontSize: 16,
         color: 'red',
-        textAlign: 'center'
+        textAlign: 'center',
+        marginTop: 32,
     },
+    title: {
+        margin: 32
+    },
+    input: {
+        margin: 8,
+        width: 350
+    },
+    leftIcon: {
+        marginRight: 8
+    },
+    button: {
+        margin: 8,
+        width: 150
+    }
 });
 
 

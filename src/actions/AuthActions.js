@@ -54,12 +54,9 @@ export const signUp = user => {
     return dispatch => {
         dispatch({ type: AUTH_SIGN_UP })
 
-        const result = AuthApi.signUp(user)
-
-        if (result.success)
-            signUpSuccess(dispatch, result.user)
-        else
-            signUpFail(dispatch, result.error)
+        AuthApi.signUp(user)
+            .then(result => result.success ? signUpSuccess(dispatch, result.user) : signUpFail(dispatch, result.error))
+            .catch(error => signUpFail(dispatch, error.error))
     }
 }
 
@@ -68,17 +65,7 @@ export const login = (email, password) => {
         dispatch({ type: AUTH_LOGIN })
 
         AuthApi.login(email, password)
-            .then(result => {
-                console.log(result)
-
-                if (result.success)
-                    loginSuccess(dispatch, result.user)
-                else
-                    loginFail(dispatch, result.error)
-            })
-            .catch(error => {
-                console.log(error)
-                loginFail(dispatch, error.error)
-            })
+            .then(result => result.success ? loginSuccess(dispatch, result.user) : loginFail(dispatch, result.error))
+            .catch(error => loginFail(dispatch, error.error))
     }
 }
