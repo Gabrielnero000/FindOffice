@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import {
     View,
     StyleSheet,
+    ActivityIndicator
 } from 'react-native'
-
-import Spinner from 'react-native-loading-spinner-overlay'
 
 import {
     Button,
@@ -12,7 +11,7 @@ import {
     Text
 } from 'react-native-elements'
 
-import { login } from '../../actions/AuthActions'
+import { login } from '../../redux/actions/AuthActions'
 import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
@@ -25,27 +24,22 @@ class LoginScreen extends Component {
         errorLoging: ''
     }
 
-    componentDidUpdate(prevProps) {
-        if (this.props !== prevProps) {
-            this.setState({
-                loading: this.props.loading,
-                errorLoging: this.props.errorLoging,
-            })
-        }
-    }
 
     onPressLogin = () => {
         const { email, password } = this.state
-        this.props.login(email, password)
+        if (email.length == 0)
+            Actions.user()
+        else
+            this.props.login(email, password)
     }
     onPressSignUp = () => Actions.signUp()
 
     onChangeEmail = text => this.setState({ email: text })
     onChangePassword = text => this.setState({ password: text })
 
-    renderLoading = loading => (
+    renderLoading = () => (
         <View>
-            <Spinner visible={loading} />
+            <ActivityIndicator size='large' color='#000' />
         </View>
     )
 
@@ -88,18 +82,25 @@ class LoginScreen extends Component {
         </View>
     )
 
+
     render() {
         const { email, password, loading, errorLoging } = this.state
 
-        return (
-            <View style={styles.container}>
-                {this.renderLoading(loading)}
-                {this.renderAppName()}
-                {this.renderInputs(email, password)}
-                {this.renderButtons()}
-                {this.renderErrorText(errorLoging)}
-            </View>
-        )
+        if (loading)
+            return (
+                <View style={styles.container}>
+                    {this.renderLoading()}
+                </View>
+            )
+        else
+            return (
+                <View style={styles.container}>
+                    {this.renderAppName()}
+                    {this.renderInputs(email, password, loading)}
+                    {this.renderButtons()}
+                    {this.renderErrorText(errorLoging)}
+                </View>
+            )
     }
 }
 

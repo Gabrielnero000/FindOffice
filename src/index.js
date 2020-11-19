@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import { View } from 'react-native'
 
-import Reducers from './reducers'
 import { Provider } from 'react-redux'
-import { createStore, applyMiddleware } from 'redux'
-import ReduxThunk from 'redux-thunk'
+import Store from './redux/store/Store'
 
 import RouterComponent from './Router'
 
@@ -12,7 +10,7 @@ import RouterComponent from './Router'
 class App extends Component {
     render() {
         return (
-            <Provider store={createStore(Reducers, {}, applyMiddleware(ReduxThunk))}>
+            <Provider store={Store}>
                 <View style={{ flex: 1 }}>
                     <RouterComponent />
                 </View>

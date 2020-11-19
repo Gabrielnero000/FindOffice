@@ -4,8 +4,6 @@ import {
     StyleSheet,
 } from 'react-native'
 
-import Spinner from 'react-native-loading-spinner-overlay'
-
 import {
     Button,
     Input,
@@ -13,7 +11,7 @@ import {
     CheckBox
 } from 'react-native-elements'
 
-import { signUp } from '../../actions/AuthActions'
+import { signUp } from '../../redux/actions/AuthActions'
 import { connect } from 'react-redux'
 
 import { Actions } from 'react-native-router-flux'
@@ -75,11 +73,11 @@ class SignUpScreen extends Component {
         this.props.signUp(user)
     }
 
-    renderLoading = loading => (
-        <View>
-            <Spinner visible={loading} />
-        </View>
-    )
+    // renderLoading = loading => (
+    //     <View>
+    //         <Spinner visible={loading} />
+    //     </View>
+    // )
 
     renderAppName = () => (
         <View>
@@ -168,7 +166,6 @@ class SignUpScreen extends Component {
 
         return (
             <View style={styles.container}>
-                {this.renderLoading(loading)}
                 {this.renderAppName()}
                 {this.renderInputs(name, email, password)}
                 {this.renderOptions(isTenant, isLegalPerson)}

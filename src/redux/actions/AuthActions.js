@@ -7,7 +7,7 @@ import {
     AUTH_LOGIN_SUCCESS
 } from './types'
 
-import AuthApi from '../api/AuthApi'
+import AuthApi from '../../api/AuthApi'
 
 import { Actions } from 'react-native-router-flux'
 
