@@ -7,7 +7,7 @@ import {
     AUTH_LOGIN_SUCCESS
 } from './types'
 
-import AuthApi from '../api/AuthApi'
+import AuthApi from '../../api/AuthApi'
 
 import { Actions } from 'react-native-router-flux'
 
@@ -63,7 +63,6 @@ export const signUp = user => {
 export const login = (email, password) => {
     return dispatch => {
         dispatch({ type: AUTH_LOGIN })
-
         AuthApi.login(email, password)
             .then(result => result.success ? loginSuccess(dispatch, result.user) : loginFail(dispatch, result.error))
             .catch(error => loginFail(dispatch, error.error))

@@ -10,7 +10,7 @@ import {
 const initialState = {
     errorLoging: '',
     errorSigningUp: '',
-    waiting: false,
+    loading: false,
     user: null
 }
 

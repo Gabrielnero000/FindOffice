@@ -6,7 +6,7 @@ const login = async (email, password) => {
         return data
     } catch (error) {
         console.log(error)
-        return {success: false, error: 'Failed to login, try again later.'}
+        return { success: false, error: 'Failed to login, try again later.' }
     }
 }
 
@@ -16,7 +16,7 @@ const signUp = async user => {
         return data
     } catch (error) {
         console.log(error)
-        return {success: false, error: 'Failed to sign up, try again later.'}
+        return { success: false, error: 'Failed to sign up, try again later.' }
     }
 }
 
