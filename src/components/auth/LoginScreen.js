@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
     View,
     StyleSheet,
-    ActivityIndicator
 } from 'react-native'
 
 import {
@@ -10,6 +9,8 @@ import {
     Input,
     Text
 } from 'react-native-elements'
+
+import Loading from '../common/Loading'
 
 import { login } from '../../redux/actions/AuthActions'
 import { connect } from 'react-redux'
@@ -25,23 +26,24 @@ class LoginScreen extends Component {
     }
 
 
+    componentDidUpdate(prevProps) {
+        if (this.props !== prevProps) {
+            this.setState({
+                loading: this.props.loading,
+                errorLoging: this.props.errorLoging,
+            })
+        }
+    }
+
     onPressLogin = () => {
         const { email, password } = this.state
-        if (email.length == 0)
-            Actions.user()
-        else
-            this.props.login(email, password)
+        this.props.login(email, password)
     }
     onPressSignUp = () => Actions.signUp()
 
     onChangeEmail = text => this.setState({ email: text })
     onChangePassword = text => this.setState({ password: text })
 
-    renderLoading = () => (
-        <View>
-            <ActivityIndicator size='large' color='#000' />
-        </View>
-    )
 
     renderAppName = () => (
         <View>
@@ -89,18 +91,18 @@ class LoginScreen extends Component {
         if (loading)
             return (
                 <View style={styles.container}>
-                    {this.renderLoading()}
+                    <Loading />
                 </View>
             )
-        else
-            return (
-                <View style={styles.container}>
-                    {this.renderAppName()}
-                    {this.renderInputs(email, password, loading)}
-                    {this.renderButtons()}
-                    {this.renderErrorText(errorLoging)}
-                </View>
-            )
+            
+        return (
+            <View style={styles.container}>
+                {this.renderAppName()}
+                {this.renderInputs(email, password, loading)}
+                {this.renderButtons()}
+                {this.renderErrorText(errorLoging)}
+            </View>
+        )
     }
 }
 

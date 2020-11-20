@@ -15,7 +15,7 @@ const UserReducer = (state = initialState, action) => {
         case FETCH_OFFICES:
             return {...initialState, loading: true}
         case FETCH_OFFICES_FAIL:
-            return {...state, errorFetching: action.error, loading: False}
+            return {...state, errorFetching: action.reason, loading: false}
         case FETCH_OFFICES_SUCCESS:
             return {...state, loading: false, offices: action.payload}
         default: 

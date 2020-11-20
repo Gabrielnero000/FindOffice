@@ -26,7 +26,7 @@ export const fetchOffices = () => {
     return dispatch => {
         dispatch({ type: FETCH_OFFICES })
 
-        UserApi.fetchOffices
+        UserApi.fetchOffices()
             .then(result => result.success ? fetchOfficesSuccess(dispatch, result.offices) : fetchOfficesFail(dispatch, result.error))
             .catch(error => fetchOfficesFail(dispatch, error.error))
     }

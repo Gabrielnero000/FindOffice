@@ -11,6 +11,8 @@ import {
     CheckBox
 } from 'react-native-elements'
 
+import Loading from '../common/Loading'
+
 import { signUp } from '../../redux/actions/AuthActions'
 import { connect } from 'react-redux'
 
@@ -57,7 +59,7 @@ class SignUpScreen extends Component {
             isTenant,
             isLegalPerson,
             cpf,
-            cnpj 
+            cnpj
         } = this.state
 
         const user = {
@@ -72,12 +74,6 @@ class SignUpScreen extends Component {
 
         this.props.signUp(user)
     }
-
-    // renderLoading = loading => (
-    //     <View>
-    //         <Spinner visible={loading} />
-    //     </View>
-    // )
 
     renderAppName = () => (
         <View>
@@ -164,9 +160,15 @@ class SignUpScreen extends Component {
             errorSigningUp,
         } = this.state
 
+        if (loading)
+            return (
+                <View style={styles.container}>
+                    <Loading />
+                </View>
+            )
+            
         return (
             <View style={styles.container}>
-                {this.renderAppName()}
                 {this.renderInputs(name, email, password)}
                 {this.renderOptions(isTenant, isLegalPerson)}
                 {this.renderDocumentInput(isLegalPerson, cpf, cnpj)}

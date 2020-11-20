@@ -3,12 +3,15 @@ import {
     View,
     StyleSheet,
     FlatList,
-    ActivityIndicator
 } from 'react-native'
 
-import { Header } from 'react-native-elements'
+import {
+    Header,
+    Text
+} from 'react-native-elements'
 
 import Office from '../common/Office'
+import Loading from '../common/Loading'
 
 import { fetchOffices } from '../../redux/actions/UserActions'
 import { connect } from 'react-redux'
@@ -23,18 +26,22 @@ class HomeScreen extends Component {
         offices: []
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props !== prevProps) {
+            this.setState({
+                loading: this.props.loading,
+                errorFetching: this.props.errorFetching,
+                offices: this.props.offices,
+            })
+        }
+    }
+
     componentDidMount() {
         this.props.fetchOffices()
     }
 
     onPressSearch = () => Actions.office()
     onPressOffice = office => console.log(office)
-
-    renderLoading = loading => (
-        <View>
-            <ActivityIndicator />
-        </View>
-    )
 
     renderHeader = () => {
         return (
@@ -57,6 +64,7 @@ class HomeScreen extends Component {
     renderOffices = offices => {
         return (
             <FlatList
+                contentContainerStyle={styles.list}
                 keyExtractor={office => office.officeId.toString()}
                 data={offices}
                 renderItem={this.renderOffice}
@@ -64,8 +72,14 @@ class HomeScreen extends Component {
         )
     }
 
+    renderEmptyText = () => {
+        <View style={styles.emptyText}>
+            <Text>There is no offices right now, try again later</Text>
+        </View>
+    }
+
     renderErrorText = errorFetching => (
-        <View>
+        <View style={styles.errorText}>
             <Text>{errorFetching}</Text>
         </View>
     )
@@ -73,12 +87,33 @@ class HomeScreen extends Component {
     render() {
         const { loading, errorFetching, offices } = this.state
 
+        if (loading)
+            return (
+                <View style={styles.container}>
+                    <Loading />
+                </View>
+            )
+
+        if (errorFetching)
+            return (
+                <View style={styles.container}>
+                    {this.renderHeader()}
+                    {this.renderErrorText(errorFetching)}
+                </View >
+            )
+
+        if (offices.length == 0)
+            return (
+                <View style={styles.container}>
+                    {this.renderHeader()}
+                    {this.renderEmptyText()}
+                </View>
+            )
+
         return (
-            <View>
-                {this.renderLoading(loading)}
+            <View style={styles.container}>
                 {this.renderHeader()}
                 {this.renderOffices(offices)}
-                {this.renderErrorText(errorFetching)}
             </View>
         )
     }
@@ -98,10 +133,27 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     header: {
+        margin: 16,
         color: '#fff',
         fontSize: 18,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
+    list: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    emptyText: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    errorText: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
 });
 
 export default connect(
