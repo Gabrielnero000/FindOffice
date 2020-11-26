@@ -24,8 +24,8 @@ const RouterComponent = () => (
                 <Scene key='office' component={OfficeScreen} />
             </Stack>
             <Stack key='tenant' hideNavBar>
-                <Scene key='home' component={TenantScreen} />
-                <Scene key='office' component={EditOfficeScreen} />
+                <Scene key='tenantHome' component={TenantScreen} />
+                <Scene key='tenantOffice' component={EditOfficeScreen} />
             </Stack>
         </Stack>
     </Router>
