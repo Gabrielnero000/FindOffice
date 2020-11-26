@@ -10,8 +10,19 @@ const fetchTenantOffices = async tenant_id => {
     }
 }
 
+const addOffice = async office => {
+    try {
+        const { data } = await api.post('/tenant/add_office', { office })
+        return data
+    } catch (error) {
+        console.log(error)
+        return { success: false, error: 'Failed to add office, try again later.' }
+    }
+}
+
 const TenantApi = {
-    fetchTenantOffices
+    fetchTenantOffices,
+    addOffice
 }
 
 export default TenantApi
