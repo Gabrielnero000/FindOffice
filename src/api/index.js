@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { exp } from 'react-native-reanimated'
 
 const api = axios.create({
     baseURL: 'http://10.0.0.33:5804'

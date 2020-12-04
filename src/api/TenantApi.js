@@ -1,28 +1,39 @@
 import api from '.'
 
-const fetchTenantOffices = async tenant_id => {
+const fetchOffices = async () => {
     try {
-        const { data } = await api.post('/tenant/get_offices', { tenant_id })
+        const { data } = await api.get('/tenant/get_all_offices')
         return data
     } catch (error) {
         console.log(error)
-        return { success: false, error: 'Failed to retrieve your offices, try again later.' }
+        return { success: false, error: 'Failed to retrieve offices, try again later.' }
     }
 }
 
-const addOffice = async office => {
+const searchOffices = async filter => {
     try {
-        const { data } = await api.post('/tenant/add_office', { office })
+        const { data } = await api.post('/tenant/search_offices', { filter })
         return data
     } catch (error) {
         console.log(error)
-        return { success: false, error: 'Failed to add office, try again later.' }
+        return { success: false, error: 'Failed to search offices, try again later.' }
+    }
+}
+
+const fetchRents = async tenant_id => {
+    try {
+        const { data } = await api.post('/tenant/get_rents', { filter })
+        return data
+    } catch (error) {
+        console.log(error)
+        return { success: false, error: 'Failed to get your rents, try again later.' }
     }
 }
 
 const TenantApi = {
-    fetchTenantOffices,
-    addOffice
+    fetchOffices,
+    searchOffices,
+    fetchRents
 }
 
 export default TenantApi

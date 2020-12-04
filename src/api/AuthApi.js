@@ -1,8 +1,8 @@
 import api from '.'
 
-const login = async (email, password) => {
+const login = async (email, password, type) => {
     try {
-        const { data } = await api.post('/auth/login', { email, password })
+        const { data } = await api.post('/auth/login', { email, password, type })
         return data
     } catch (error) {
         console.log(error)

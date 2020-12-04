@@ -1,13 +1,6 @@
 import React from 'react'
-import {
-    View,
-    ActivityIndicator
-} from 'react-native'
+import { Spinner } from 'native-base'
 
-const Loading = () => (
-    <View>
-        <ActivityIndicator size='large' color='#000'/>
-    </View>
-)
+const Loading = () => <Spinner size='large' color='#000' />
 
 export default Loading

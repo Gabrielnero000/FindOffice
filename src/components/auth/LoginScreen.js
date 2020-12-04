@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
 import {
-    View,
     StyleSheet,
 } from 'react-native'
 
 import {
+    Container,
+    Content,
     Button,
+    Label,
+    Card,
+    CardItem,
+    Form,
+    Picker,
+    Body,
+    Title,
     Input,
-    Text
-} from 'react-native-elements'
+    Text,
+    Item,
+} from 'native-base'
 
 import Loading from '../common/Loading'
 
@@ -21,10 +30,10 @@ class LoginScreen extends Component {
     state = {
         email: '',
         password: '',
+        type: 'tenant',
         loading: false,
         errorLoging: ''
     }
-
 
     componentDidUpdate(prevProps) {
         if (this.props !== prevProps) {
@@ -36,72 +45,120 @@ class LoginScreen extends Component {
     }
 
     onPressLogin = () => {
-        const { email, password } = this.state
-        this.props.login(email, password)
+        const { email, password, type } = this.state
+        this.props.login(email, password, type)
     }
+
     onPressSignUp = () => Actions.signUp()
 
-    onChangeEmail = text => this.setState({ email: text })
-    onChangePassword = text => this.setState({ password: text })
+    onChangeEmail = email => this.setState({ email })
+    onChangePassword = password => this.setState({ password })
+    onChangeType = type => this.setState({ type })
 
 
     renderAppName = () => (
-        <View>
-            <Text h1 style={styles.title}>Find Office</Text>
-        </View>
+        <CardItem header>
+            <Body>
+                <Title style={styles.title}>Find Office</Title>
+            </Body>
+        </CardItem>
     )
 
-    renderInputs = (email, password) => (
-        <View>
+    renderEmail = () => (
+        <Item>
             <Input
-                containerStyle={styles.input}
                 placeholder='Email'
                 onChangeText={this.onChangeEmail}
-                leftIcon={{ name: 'email' }}
-                leftIconContainerStyle={styles.leftIcon}
-                value={email} />
+                value={this.state.email}
+                keyboardType='email-address'
+            />
+        </Item>
+    )
+
+    renderPassword = () => (
+        <Item>
             <Input
-                containerStyle={styles.input}
                 placeholder='Password'
                 secureTextEntry
                 onChangeText={this.onChangePassword}
-                leftIcon={{ name: 'lock' }}
-                leftIconContainerStyle={styles.leftIcon}
-                value={password} />
-        </View>
+                value={this.state.password}
+            />
+        </Item>
+    )
+
+    renderUserType = () => (
+        <Item>
+            <Label style={{ marginLeft: 4 }}>User type:</Label>
+            <Picker
+                mode='dropdown'
+                selectedValue={this.state.type}
+                onValueChange={this.onChangeType}
+            >
+                <Picker.Item label='Tenant' value='tenant' />
+                <Picker.Item label='Landmaster' value='landmaster' />
+            </Picker>
+        </Item>
+
+    )
+
+    renderInputForm = () => (
+        <CardItem>
+            <Body>
+                <Form style={{ alignSelf: 'stretch' }}>
+                    {this.renderEmail()}
+                    {this.renderPassword()}
+                    {this.renderUserType()}
+                </Form>
+            </Body>
+        </CardItem>
+    )
+
+    renderLoginButton = () => (
+        <Button style={styles.button} onPress={this.onPressLogin}>
+            <Label style={styles.buttonLabel}>Login</Label>
+        </Button>
+    )
+
+    renderSignUpButton = () => (
+        <Button style={styles.button} onPress={this.onPressSignUp}>
+            <Label style={styles.buttonLabel}>Sign Up</Label>
+        </Button>
     )
 
     renderButtons = () => (
-        <View>
-            <Button buttonStyle={styles.button} title='Login' onPress={this.onPressLogin} />
-            <Button buttonStyle={styles.button} title='Sign Up' onPress={this.onPressSignUp} />
-        </View>
+        <CardItem footer>
+            <Body style={styles.buttonsBody}>
+                {this.renderLoginButton()}
+                {this.renderSignUpButton()}
+            </Body>
+        </CardItem>
     )
 
-    renderErrorText = errorLoging => (
-        <View>
-            <Text style={styles.errorText}>{errorLoging}</Text>
-        </View>
+    renderErrorText = () => (
+        <Text style={styles.errorText}>{this.state.errorLoging}</Text>
     )
-
 
     render() {
-        const { email, password, loading, errorLoging } = this.state
-
-        if (loading)
+        if (this.state.loading)
             return (
-                <View style={styles.container}>
-                    <Loading />
-                </View>
+                <Container>
+                    <Content contentContainerStyle={styles.content}>
+                        <Loading />
+                    </Content>
+                </Container>
             )
-            
+
         return (
-            <View style={styles.container}>
-                {this.renderAppName()}
-                {this.renderInputs(email, password, loading)}
-                {this.renderButtons()}
-                {this.renderErrorText(errorLoging)}
-            </View>
+            <Container>
+                <Content contentContainerStyle={styles.content}>
+                    <Card style={styles.card}>
+                        {this.renderAppName()}
+                        {this.renderInputForm()}
+                        {this.renderButtons()}
+                    </Card>
+                    {this.renderErrorText()}
+                </Content>
+            </Container>
         )
     }
 }
@@ -113,31 +170,36 @@ const mapStateToProps = state => ({
 
 
 const styles = StyleSheet.create({
-    container: {
+    content: {
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    card: {
+        width: 300,
+        height: 330
+    },
+    title: {
+        color: 'black',
+        alignSelf: 'center'
+    },
+    button: {
+        width: 100,
+        justifyContent: 'center',
+    },
+    buttonLabel: {
+        color: 'white'
+    },
+    buttonsBody: {
+        flexDirection: 'row',
+        justifyContent: 'space-around'
     },
     errorText: {
         fontSize: 16,
         color: 'red',
         textAlign: 'center',
         marginTop: 32,
-    },
-    title: {
-        margin: 32
-    },
-    input: {
-        margin: 8,
-        width: 350
-    },
-    leftIcon: {
-        marginRight: 8
-    },
-    button: {
-        margin: 8,
-        width: 150
     }
 });
 

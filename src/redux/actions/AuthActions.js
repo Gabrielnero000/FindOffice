@@ -12,10 +12,12 @@ import AuthApi from '../../api/AuthApi'
 import { Actions } from 'react-native-router-flux'
 
 const startApp = user => {
-    if (user.isTenant)
+    if (user.type == 'landmaster')
+        Actions.landmaster()
+    else if(user.type == 'tenant')
         Actions.tenant()
     else
-        Actions.user()
+        throw `Unknow user type ${user.type}`
 }
 
 const signUpFail = (dispatch, error) => {
@@ -60,10 +62,10 @@ export const signUp = user => {
     }
 }
 
-export const login = (email, password) => {
+export const login = (email, password, type) => {
     return dispatch => {
         dispatch({ type: AUTH_LOGIN })
-        AuthApi.login(email, password)
+        AuthApi.login(email, password, type)
             .then(result => result.success ? loginSuccess(dispatch, result.user) : loginFail(dispatch, result.error))
             .catch(error => loginFail(dispatch, error.error))
     }

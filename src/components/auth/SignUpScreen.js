@@ -1,15 +1,23 @@
 import React, { Component } from 'react'
 import {
-    View,
     StyleSheet,
 } from 'react-native'
 
 import {
+    Container,
+    Content,
     Button,
+    Label,
+    Card,
+    CardItem,
+    Picker,
+    Form,
+    Body,
+    Title,
     Input,
     Text,
-    CheckBox
-} from 'react-native-elements'
+    Item,
+} from 'native-base'
 
 import Loading from '../common/Loading'
 
@@ -23,10 +31,7 @@ class SignUpScreen extends Component {
         name: '',
         email: '',
         password: '',
-        isTenant: false,
-        isLegalPerson: false,
-        cpf: '',
-        cnpj: '',
+        type: 'tenant',
         loading: false,
         errorSigningUp: ''
     }
@@ -40,141 +45,133 @@ class SignUpScreen extends Component {
         }
     }
 
-    onChangeName = text => this.setState({ name: text })
-    onChangeEmail = text => this.setState({ email: text })
-    onChangePassword = text => this.setState({ password: text })
-    onChangeCPF = text => this.setState({ cpf: text })
-    onChangeCNPJ = text => this.setState({ cnpj: text })
-
-    onPressTenant = () => this.setState({ isTenant: !this.state.isTenant })
-    onPressLegalPerson = () => this.setState({ isLegalPerson: !this.state.isLegalPerson })
+    onChangeName = name => this.setState({ name })
+    onChangeEmail = email => this.setState({ email })
+    onChangePassword = password => this.setState({ password })
+    onChangeType = type => this.setState({ type })
 
     onGoBack = () => Actions.pop()
 
     onPressSignUp = () => {
-        const {
-            name,
-            email,
-            password,
-            isTenant,
-            isLegalPerson,
-            cpf,
-            cnpj
-        } = this.state
-
         const user = {
-            name,
-            email,
-            password,
-            isTenant,
-            isLegalPerson,
-            cpf,
-            cnpj
+            name: this.state.name,
+            email: this.state.email,
+            password: this.state.password,
+            type: this.state.type
         }
 
         this.props.signUp(user)
     }
 
     renderAppName = () => (
-        <View>
-            <Text h1 style={styles.title}>Find Office</Text>
-        </View>
+        <CardItem header>
+            <Body>
+                <Title style={styles.title}>Find Office</Title>
+            </Body>
+        </CardItem>
     )
 
-    renderInputs = (name, email, password) => (
-        <View>
+    renderName = () => (
+        <Item>
             <Input
-                containerStyle={styles.input}
                 placeholder='Name'
                 onChangeText={this.onChangeName}
-                leftIcon={{ name: 'face' }}
-                leftIconContainerStyle={styles.leftIcon}
-                value={name} />
+                value={this.state.name}
+            />
+        </Item>
+    )
+
+    renderEmail = () => (
+        <Item>
             <Input
-                containerStyle={styles.input}
                 placeholder='Email'
                 onChangeText={this.onChangeEmail}
-                leftIcon={{ name: 'email' }}
-                leftIconContainerStyle={styles.leftIcon}
-                value={email} />
+                value={this.state.email}
+                keyboardType='email-address'
+            />
+        </Item>
+    )
+
+    renderPassword = () => (
+        <Item>
             <Input
-                containerStyle={styles.input}
                 placeholder='Password'
                 secureTextEntry
                 onChangeText={this.onChangePassword}
-                leftIcon={{ name: 'lock' }}
-                leftIconContainerStyle={styles.leftIcon}
-                value={password} />
-        </View>
+                value={this.state.password}
+            />
+        </Item>
     )
 
-    renderOptions = (isTenant, isLegalPerson) => (
-        <View style={styles.options}>
-            <CheckBox
-                title='Legal Person'
-                checked={isLegalPerson}
-                onPress={this.onPressLegalPerson}
-            />
-            <CheckBox
-                title='Tenant'
-                checked={isTenant}
-                onPress={this.onPressTenant}
-            />
-        </View>
+    renderUserType = () => (
+        <Item>
+            <Label style={{ marginLeft: 4 }}>User type:</Label>
+            <Picker
+                mode='dropdown'
+                selectedValue={this.state.type}
+                onValueChange={this.onChangeType}
+            >
+                <Picker.Item label='Tenant' value='tenant' />
+                <Picker.Item label='Landmaster' value='landmaster' />
+            </Picker>
+        </Item>
+
     )
 
-    renderDocumentInput = (isLegalPerson, cpf, cnpj) => (
-        <View>
-            <Input
-                containerStyle={styles.input}
-                placeholder={isLegalPerson ? 'CNPJ' : 'CPF'}
-                onChangeText={isLegalPerson ? this.onChangeCNPJ : this.onChangeCPF}
-                leftIcon={{ name: 'perm-identity' }}
-                leftIconContainerStyle={styles.leftIcon}
-                value={isLegalPerson ? cnpj : cpf} />
-        </View>
+    renderSignUpButton = () => (
+        <Button style={styles.button} onPress={this.onPressSignUp}>
+            <Label style={styles.buttonLabel}>Sign Up</Label>
+        </Button>
     )
 
     renderButtons = () => (
-        <View>
-            <Button title='Sign Up' onPress={this.onPressSignUp} buttonStyle={styles.button} />
-        </View>
+        <CardItem footer>
+            <Body style={styles.buttonsBody}>
+                {this.renderSignUpButton()}
+            </Body>
+        </CardItem>
     )
 
-    renderErrorText = errorSigningUp => (
-        <View>
-            <Text style={styles.errorText}>{errorSigningUp}</Text>
-        </View>
+    renderInputForm = () => (
+        <CardItem>
+            <Body>
+                <Form style={{ alignSelf: 'stretch' }}>
+                    {this.renderName()}
+                    {this.renderEmail()}
+                    {this.renderPassword()}
+                    {this.renderUserType()}
+                </Form>
+            </Body>
+        </CardItem>
+    )
+
+    renderErrorText = () => (
+        <Text style={styles.errorText}>{this.state.errorSigningUp}</Text>
     )
 
     render() {
-        const {
-            name,
-            email,
-            password,
-            isTenant,
-            isLegalPerson,
-            cpf,
-            cnpj,
-            loading,
-            errorSigningUp,
-        } = this.state
+        const { loading } = this.state
 
         if (loading)
             return (
-                <View style={styles.container}>
-                    <Loading />
-                </View>
+                <Container>
+                    <Content contentContainerStyle={styles.content}>
+                        <Loading />
+                    </Content>
+                </Container>
             )
-            
+
         return (
-            <View style={styles.container}>
-                {this.renderInputs(name, email, password)}
-                {this.renderOptions(isTenant, isLegalPerson)}
-                {this.renderDocumentInput(isLegalPerson, cpf, cnpj)}
-                {this.renderButtons()}
-                {this.renderErrorText(errorSigningUp)}
-            </View>
+            <Container>
+                <Content contentContainerStyle={styles.content}>
+                    <Card style={styles.card}>
+                        {this.renderAppName()}
+                        {this.renderInputForm()}
+                        {this.renderButtons()}
+                    </Card>
+                    {this.renderErrorText()}
+                </Content>
+            </Container>
         )
     }
 }
@@ -185,35 +182,36 @@ const mapStateToProps = state => ({
 })
 
 const styles = StyleSheet.create({
-    container: {
+    content: {
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    card: {
+        width: 300,
+        height: 370
+    },
+    title: {
+        color: 'black',
+        alignSelf: 'center'
+    },
+    button: {
+        width: 100,
+        justifyContent: 'center',
+    },
+    buttonLabel: {
+        color: 'white'
+    },
+    buttonsBody: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
     },
     errorText: {
         fontSize: 16,
         color: 'red',
         textAlign: 'center',
         marginTop: 32,
-    },
-    title: {
-        margin: 32
-    },
-    input: {
-        margin: 8,
-        width: 350
-    },
-    options: {
-        flexDirection: 'row',
-        margin: 8
-    },
-    leftIcon: {
-        marginRight: 8
-    },
-    button: {
-        margin: 8,
-        width: 150
     }
 });
 

@@ -1,19 +1,19 @@
 import LoginScreen from './auth/LoginScreen'
 import SignUpScreen from './auth/SignUpScreen'
 
-import HomeScreen from './user/HomeScreen'
-import SearchScreen from './user/SearchScreen'
-import OfficeScreen from './user/OfficeScreen'
+import HomeScreen from './tenant/TenantScreen'
+import SearchScreen from './tenant/SearchScreen'
+import BookingScreen from './tenant/BookingScreen'
 
-import TenantScreen from './tenant/TenantScreen'
-import EditOfficeScreen from './tenant/EditOfficeScreen'
+import LandmasterScreen from './landmaster/LandmasterScreen'
+import EditOfficeScreen from './landmaster/EditOfficeScreen'
 
 export {
     LoginScreen,
     SignUpScreen,
     HomeScreen,
     SearchScreen,
-    OfficeScreen,
-    TenantScreen,
+    BookingScreen,
+    LandmasterScreen,
     EditOfficeScreen
 }

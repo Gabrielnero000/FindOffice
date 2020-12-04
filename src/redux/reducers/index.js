@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux'
 
 import AuthReducer from './AuthReducer'
-import UserReducer from './UserReducer'
 import TenantReducer from './TenantReducer'
+import LandmasterReducer from './LandmasterReducer'
 
 const RootReducer = combineReducers({
     AuthReducer,
-    UserReducer,
-    TenantReducer
+    TenantReducer,
+    LandmasterReducer
 })
 
 export default RootReducer

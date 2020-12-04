@@ -2,60 +2,86 @@ import {
     FETCH_TENANT_OFFICES,
     FETCH_TENANT_OFFICES_FAIL,
     FETCH_TENANT_OFFICES_SUCCESS,
-    ADD_OFFICE,
-    ADD_OFFICE_FAIL,
-    ADD_OFFICE_SUCCESS
+    SEARCH_OFFICES,
+    SEARCH_OFFICES_FAIL,
+    SEARCH_OFFICES_SUCCESS,
+    FETCH_RENTS,
+    FETCH_RENTS_FAIL,
+    FETCH_RENTS_SUCCESS
 } from './types'
 
 
 import TenantApi from '../../api/TenantApi'
 
 
-const fetchTenantOfficesFail = (dispatch, error) => {
+const fetchOfficesFail = (dispatch, error) => {
     dispatch({
         type: FETCH_TENANT_OFFICES_FAIL,
         reason: error
     })
 }
 
-const fetchTenantOfficesSuccess = (dispatch, offices) => {
+const fetchOfficesSuccess = (dispatch, offices) => {
     dispatch({
         type: FETCH_TENANT_OFFICES_SUCCESS,
         payload: offices
     })
 }
 
-const addOfficeFail = (dispatch, error) => {
+const searchOfficesFail = (dispatch, error) => {
     dispatch({
-        type: ADD_OFFICE_FAIL,
+        type: SEARCH_OFFICES_FAIL,
         reason: error
     })
 }
 
-const addOfficeSuccess = (dispatch, offices) => {
+const searchOfficesSuccess = (dispatch, offices) => {
     dispatch({
-        type: ADD_OFFICE_SUCCESS,
+        type: SEARCH_OFFICES_SUCCESS,
         payload: offices
     })
 }
 
+const fetchRentsFail = (dispatch, error) => {
+    dispatch({
+        type: FETCH_RENTS_FAIL,
+        reason: error
+    })
+}
 
-export const fetchTenantOffices = tenant_id => {
+const fetchRentsSuccess = (dispatch, rents) => {
+    dispatch({
+        type: FETCH_RENTS_SUCCESS,
+        payload: rents
+    })
+}
+
+export const fetchOffices = () => {
     return dispatch => {
         dispatch({ type: FETCH_TENANT_OFFICES })
 
-        TenantApi.fetchTenantOffices(tenant_id)
-            .then(result => result.success ? fetchTenantOfficesSuccess(dispatch, result.offices) : fetchTenantOfficesFail(dispatch, result.error))
-            .catch(error => fetchTenantOfficesFail(dispatch, error.error))
+        TenantApi.fetchOffices()
+            .then(result => result.success ? fetchOfficesSuccess(dispatch, result.offices) : fetchOfficesFail(dispatch, result.error))
+            .catch(error => fetchOfficesFail(dispatch, error.error))
     }
 }
 
-export const addOffice = office => {
+export const searchOffices = filter => {
     return dispatch => {
-        dispatch({ type: ADD_OFFICE })
+        dispatch({ type: SEARCH_OFFICES })
 
-        TenantApi.addOffice(office)
-            .then(result => result.success ? addOfficeSuccess(dispatch, result.offices) : addOfficeFail(dispatch, result.error))
-            .catch(error => addOfficeFail(dispatch, error.error))
+        TenantApi.searchOffices(filter)
+            .then(result => result.success ? searchOfficesSuccess(dispatch, result.offices) : searchOfficesFail(dispatch, result.error))
+            .catch(error => searchOfficesFail(dispatch, error.error))
+    }
+}
+
+export const fetchRents = tenant_id => {
+    return dispatch => {
+        dispatch({ type: FETCH_RENTS })
+
+        TenantApi.fetchRents(tenant_id)
+            .then(result => result.success ? fetchRentsSuccess(dispatch, result.offices) : fetchRentsFail(dispatch, result.error))
+            .catch(error => fetchRentsFail(dispatch, error.error))
     }
 }
