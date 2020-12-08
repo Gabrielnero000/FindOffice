@@ -101,11 +101,26 @@ class RentsScreen extends Component {
         }
     }
 
-    onPressRent = rent => console.log(rent)
+    onPressRent = (rent, type) => {
+        switch(type) {
+            case 'Waiting Check-in':
+                console.log(rent, 'check in')
+                break
+            case 'Waiting Check-out':
+                console.log(rent, 'check out')
+                break
+            case 'Waiting Scoring':
+                console.log(rent, 'scoring')
+                break
+            case 'Others':
+                console.log(rent, 'Others')
+                break
+        }
+    }
 
-    renderRent = ({ item: rent }) => (
+    renderRent = ({item: rent, section: {title: type}}) => (
         <Rent
-            onPress={() => this.onPressRent(rent)}
+            onPress={() => this.onPressRent(rent, type)}
             rent={rent}
         />
     )

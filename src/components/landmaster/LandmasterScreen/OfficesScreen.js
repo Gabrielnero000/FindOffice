@@ -29,7 +29,7 @@ class OfficesScreen extends Component {
 
     componentDidMount() {
         const { user } = this.props
-        this.props.fetchLandmasterOffices(user.userId)
+        this.props.fetchLandmasterOffices(user.landmasterId)
     }
 
     componentDidUpdate(prevProps) {
