@@ -71,10 +71,12 @@ class SearchScreen extends Component {
             available_now: this.state.available_now,
             city: this.state.city.value,
             district: this.state.district.value,
-            min_price: this.state.min_price.value,
-            max_price: this.state.max_price.value,
-            capacity: this.state.capacity.value,
+            min_price: Number(this.state.min_price.value),
+            max_price: Number(this.state.max_price.value),
+            capacity: Number(this.state.capacity.value),
         }
+
+        console.log(filter)
 
         this.props.searchOffices(filter)
     }
@@ -129,7 +131,7 @@ class SearchScreen extends Component {
             />
             <Label style={styles.typeLabel}>Office type:</Label>
             <Picker
-                enabled={this.state.description.enabled}
+                enabled={this.state.type.enabled}
                 mode='dropdown'
                 selectedValue={this.state.type.value}
                 onValueChange={this.onTypeChange}

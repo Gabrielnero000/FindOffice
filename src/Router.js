@@ -6,7 +6,9 @@ import {
     SignUpScreen,
     HomeScreen,
     SearchScreen,
+    SearchResultScreen,
     BookingScreen,
+    ScoringScreen,
     LandmasterScreen,
     EditOfficeScreen
 } from './components'
@@ -21,7 +23,9 @@ const RouterComponent = () => (
             <Stack key='tenant' hideNavBar>
                 <Scene key='tenantHome' component={HomeScreen} />
                 <Scene key='search' component={SearchScreen} />
+                <Scene key='searchResult' component={SearchResultScreen} />
                 <Scene key='booking' component={BookingScreen} />
+                <Scene key='scoring' component={ScoringScreen} />
             </Stack>
             <Stack key='landmaster' hideNavBar>
                 <Scene key='landmasterHome' component={LandmasterScreen} />

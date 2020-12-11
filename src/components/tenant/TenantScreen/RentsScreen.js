@@ -14,81 +14,33 @@ import {
 import Rent from '../../common/Rent'
 import Loading from '../../common/Loading'
 
-import { fetchRents } from '../../../redux/actions/TenantActions'
+import { 
+    fetchRents, 
+    checkIn, 
+    checkOut, 
+    scoreRent 
+} from '../../../redux/actions/TenantActions'
+
 import { connect } from 'react-redux'
-
-
-const no_checkIn = [
-    {
-        rentId: 0,
-        officeId: 2,
-        tenantId: 0,
-        bookingStart: '2020-12-03',
-        bookingEnd: '2020-12-10',
-        checkIn: null,
-        checkOut: null,
-        scoring: null
-    }
-]
-
-const no_checkOut = [
-    {
-        rentId: 0,
-        officeId: 2,
-        tenantId: 0,
-        bookingStart: '2020-12-14',
-        bookingEnd: '2020-12-21',
-        checkIn: '2020-12-14',
-        checkOut: null,
-        scoring: null
-    }
-]
-
-const no_scoring = [
-    {
-        rentId: 0,
-        officeId: 2,
-        tenantId: 0,
-        bookingStart: '2020-12-12',
-        bookingEnd: '2020-12-14',
-        checkIn: '2020-12-12',
-        checkOut: '2020-12-14',
-        scoring: null
-    }
-]
-
-const past_rents = [
-    {
-        rentId: 0,
-        officeId: 2,
-        tenantId: 0,
-        bookingStart: '2020-12-16',
-        bookingEnd: '2020-12-18',
-        checkIn: '2020-12-16',
-        checkOut: '2020-12-17',
-        scoring: 3.8
-    }
-]
+import { Actions } from 'react-native-router-flux'
 
 class RentsScreen extends Component {
     state = {
         loading: false,
         errorFetching: '',
+        errorCheckin: '',
+        errorCheckout: '',
+        errorScoring: '',
         rents: {
-            no_checkIn,
-            no_checkOut,
-            no_scoring,
-            past_rents
+            no_checkIn: [],
+            no_checkOut: [],
+            no_scoring: [],
+            past_rents: []
         }
     }
 
-    // componentDidMount() {
-    //     this.props.fetchRents()
-    // }
-
-    getRentsNumber = () => {
-        const {no_checkIn, no_checkOut, no_scoring, past_rents} = this.state.rents
-        return no_checkIn.length + no_checkOut.length + no_scoring.length + past_rents.length
+    componentDidMount() {
+        this.props.fetchRents(this.props.tenand_id)
     }
 
     componentDidUpdate(prevProps) {
@@ -96,24 +48,31 @@ class RentsScreen extends Component {
             this.setState({
                 loading: this.props.loading,
                 errorFetching: this.props.errorFetching,
-                // rents: this.props.rents,
+                errorCheckin: this.props.errorCheckin,
+                errorCheckout: this.props.errorCheckout,
+                errorScoring: this.props.errorScoring,
+                rents: this.props.rents,
             })
         }
+    }
+
+    getRentsNumber = () => {
+        const {no_checkIn, no_checkOut, no_scoring, past_rents} = this.state.rents
+        return no_checkIn.length + no_checkOut.length + no_scoring.length + past_rents.length
     }
 
     onPressRent = (rent, type) => {
         switch(type) {
             case 'Waiting Check-in':
-                console.log(rent, 'check in')
+                this.props.checkIn(rent.rentId)
                 break
             case 'Waiting Check-out':
-                console.log(rent, 'check out')
+                this.props.checkOut(rent.rentId)
                 break
             case 'Waiting Scoring':
-                console.log(rent, 'scoring')
+                Actions.scoring({ rent })
                 break
             case 'Others':
-                console.log(rent, 'Others')
                 break
         }
     }
@@ -186,8 +145,12 @@ class RentsScreen extends Component {
 }
 
 const mapStateToProps = state => ({
+    tenand_id: state.AuthReducer.user.tenantId,
     loading: state.TenantReducer.loading,
     errorFetching: state.TenantReducer.errorFetching,
+    errorCheckin: state.TenantReducer.errorCheckin,
+    errorCheckout: state.TenantReducer.errorCheckout,
+    errorScoring: state.TenantReducer.errorScoring,
     rents: state.TenantReducer.rents
 })
 
@@ -205,5 +168,10 @@ const styles = StyleSheet.create({
 
 export default connect(
     mapStateToProps,
-    { fetchRents }
+    { 
+        fetchRents,
+        checkIn,
+        checkOut,
+        scoreRent
+    }
 )(RentsScreen)

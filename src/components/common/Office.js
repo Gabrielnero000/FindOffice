@@ -10,7 +10,12 @@ import {
 
 
 function getScore(office) {
-    const score = office.scoring / office.nScore
+    let score
+    if (office.nScore > 0)
+        score = office.scoring / office.nScore
+    else
+        score = 0
+        
     return score.toFixed(1)
 }
 

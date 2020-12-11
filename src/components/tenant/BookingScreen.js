@@ -14,20 +14,54 @@ import {
     Text
 } from 'native-base'
 
+import Loading from '../common/Loading'
+
 import { Calendar } from 'react-native-calendars'
-import { Root, Popup } from 'popup-ui'
+import { Popup } from 'popup-ui'
+
+import {
+    getOfficeOccupation,
+    rent
+} from '../../redux/actions/TenantActions'
+import { connect } from 'react-redux'
 
 class BookingScreen extends Component {
     state = {
-        unaviable_days: {
-            '2020-12-09': { startingDay: true, color: 'gray', textColor: 'white' },
-            '2020-12-10': { selected: true, color: 'gray' },
-            '2020-12-11': { endingDay: true, selected: true, color: 'gray' },
-        },
+        loading: false,
+        errorGettingOccupation: '',
+        errorRenting: '',
+        unaviable_days: {},
+        currentMonth: new Date().getMonth() + 1,
         booking_start: null,
         booking_end: null,
         invalid_day_choosed: false,
         booking_days: {}
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props !== prevProps) {
+            let unaviable_days = {}
+
+            this.props.unaviable_days.forEach(day => unaviable_days[day.substring(0, 10)] = { selected: true, color: 'gray' })
+
+            this.setState({
+                loading: this.props.loading,
+                errorGettingOccupation: this.props.errorGettingOccupation,
+                errorRenting: this.props.errorRenting,
+                unaviable_days,
+            })
+        }
+    }
+
+    componentDidMount() {
+        this.updateOccupiedDays(new Date().getMonth() + 1)
+    }
+
+
+    updateOccupiedDays(month) {
+        console.log(month)
+        const { office: { officeId: office_id } } = this.props
+        this.props.getOfficeOccupation(office_id, month)
     }
 
     renderErrorDialog = () => Popup.show({
@@ -40,6 +74,7 @@ class BookingScreen extends Component {
             this.setState({ invalid_day_choosed: false })
         }
     })
+
 
     validateDay = day => {
         if (day in this.state.unaviable_days) {
@@ -94,19 +129,20 @@ class BookingScreen extends Component {
         if (start > end) {
             start = new Date(day)
             end = new Date(booking_start)
-            booking_days[booking_start] = { endingDay: true, selected: true, color: 'blue' }
-            booking_days[day] = { startingDay: true, color: 'blue', textColor: 'white' }
-        }
-        else {
-            booking_days[day] = { endingDay: true, selected: true, color: 'blue' }
         }
 
         if (this.setBookingRange(start, end))
-            this.setState({
-                booking_start: start.toISOString().substring(0, 10),
-                booking_end: end.toISOString().substring(0, 10),
-                booking_days
-            })
+            start = start.toISOString().substring(0, 10)
+        end = end.toISOString().substring(0, 10)
+
+        booking_days[start] = { startingDay: true, color: 'blue', textColor: 'white' }
+        booking_days[end] = { endingDay: true, textColor: 'white', color: 'blue' }
+
+        this.setState({
+            booking_start: start,
+            booking_end: end,
+            booking_days
+        })
     }
 
     restartBooking = day => {
@@ -124,6 +160,17 @@ class BookingScreen extends Component {
     }
 
     closePopUp = () => this.setState({ invalid_day_choosed: false })
+
+    onPressRent = () => {
+        const { tenant_id } = this.props
+        const { office: { officeId: office_id } } = this.props
+        const { booking_days } = this.state
+
+        const rent_days = Object.keys(booking_days).sort((d1, d2) => d1 - d2)
+
+        this.props.rent(office_id, tenant_id, rent_days)
+
+    }
 
     onDayPress = day => {
         const { booking_start, booking_end } = this.state
@@ -155,8 +202,9 @@ class BookingScreen extends Component {
     renderCalendar = () => (
         <Calendar
             onDayPress={this.onDayPress}
-            markedDates={{ ...this.state.unaviable_days, ...this.state.booking_days }}
             markingType={'period'}
+            markedDates={{ ...this.state.unaviable_days, ...this.state.booking_days }}
+            minDate={new Date().toISOString().substring(0, 10)}
         />
     )
 
@@ -169,33 +217,80 @@ class BookingScreen extends Component {
     }
 
     renderRentButton = () => (
-        <Button style={{ alignSelf: 'center', width: 100, justifyContent: 'center', marginTop: 32 }}>
+        <Button style={{ alignSelf: 'center', width: 100, justifyContent: 'center', marginTop: 32 }} onPress={this.onPressRent}>
             <Title>Rent</Title>
         </Button>
     )
 
+    renderErrorText = text => (
+        <Text style={styles.errorText}>{text}</Text>
+    )
+
     render() {
-        return (
-            <Root>
+        if (this.state.loading)
+            return (
                 <Container>
-                    {this.renderHeader()}
-                    <Content contentContainerStyle={styles.content}>
-                        {this.renderCalendarLabel()}
-                        {this.renderCalendar()}
-                        {this.renderPrice()}
-                        {this.renderRentButton()}
+                    <Content contentContainerStyle={styles.emptyContent}>
+                        <Loading />
                     </Content>
                 </Container>
-            </Root>
+            )
+
+        if (this.state.errorGettingOccupation)
+            return (
+                <Container>
+                    <Content contentContainerStyle={styles.emptyContent}>
+                        {this.renderErrorText(this.state.errorGettingOccupation)}
+                    </Content>
+                </Container>
+            )
+
+        return (
+            <Container>
+                {this.renderHeader()}
+                <Content contentContainerStyle={styles.content}>
+                    {this.renderCalendarLabel()}
+                    {this.renderCalendar()}
+                    {this.renderPrice()}
+                    {this.renderRentButton()}
+                    {this.renderErrorText(this.state.errorRenting)}
+                </Content>
+            </Container>
         )
     }
 }
 
+const mapStateToProps = state => ({
+    loading: state.TenantReducer.loading,
+    errorGettingOccupation: state.TenantReducer.errorGettingOccupation,
+    errorRenting: state.TenantReducer.errorRenting,
+    unaviable_days: state.TenantReducer.unaviable_days,
+    tenant_id: state.AuthReducer.user.tenantId
+})
+
 const styles = StyleSheet.create({
+    emptyContent: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     content: {
         flex: 1,
         backgroundColor: '#fff',
+    },
+    errorText: {
+        alignSelf: 'center',
+        marginTop: 8,
+        color: 'red',
+        textAlign: 'center'
     }
 })
 
-export default BookingScreen
+export default connect(
+    mapStateToProps,
+    {
+        getOfficeOccupation,
+        rent
+    }
+)(BookingScreen)

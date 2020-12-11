@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {
-    View,
     StyleSheet,
+    FlatList
 } from 'react-native'
 
 import {
@@ -44,7 +44,7 @@ class OfficesScreen extends Component {
 
     onPressAdd = () => Actions.landmasterOffice()
 
-    onPressOffice = office => console.log(office)
+    onPressOffice = office => Actions.landmasterOffice({ office })
 
     renderOffice = ({ item: office }) => (
         <Office
@@ -55,7 +55,6 @@ class OfficesScreen extends Component {
 
     renderOffices = () => (
         <FlatList
-            contentContainerStyle={stylesOfficeScreen.list}
             keyExtractor={office => office.officeId.toString()}
             data={this.state.offices}
             renderItem={this.renderOffice}
@@ -80,11 +79,13 @@ class OfficesScreen extends Component {
 
     render() {
         if (this.state.loading)
-            <Container>
-                <Content contentContainerStyle={styles.content}>
-                    <Loading />
-                </Content>
-            </Container>
+            return (
+                <Container>
+                    <Content contentContainerStyle={styles.content}>
+                        <Loading />
+                    </Content>
+                </Container>
+            )
 
         if (this.state.errorFetching)
             return (
@@ -108,10 +109,8 @@ class OfficesScreen extends Component {
 
         return (
             <Container>
-                <Content contentContainerStyle={styles.content}>
-                    {this.renderOffices()}
-                    {this.renderAddButton()}
-                </Content>
+                {this.renderOffices()}
+                {this.renderAddButton()}
             </Container>
         )
     }
@@ -126,12 +125,6 @@ const mapStateToProps = state => ({
 
 const styles = StyleSheet.create({
     content: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    list: {
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',

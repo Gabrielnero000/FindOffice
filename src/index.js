@@ -8,6 +8,7 @@ import { createStore, applyMiddleware } from 'redux'
 import ReduxThunk from 'redux-thunk'
 
 import Loading from './components/common/Loading'
+import { Root } from 'popup-ui'
 
 import RouterComponent from './Router'
 import * as Font from 'expo-font'
@@ -37,10 +38,11 @@ class App extends Component {
                 </Container>
             )
 
-
         return (
             <Provider store={createStore(RootReducer, {}, applyMiddleware(ReduxThunk))}>
-                <RouterComponent />
+                <Root>
+                    <RouterComponent />
+                </Root>
             </Provider>
         )
     }
